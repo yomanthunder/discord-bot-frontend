@@ -6,32 +6,15 @@ export default function Dashboard() {
   const [selectedGuild, setSelectedGuild] = useState(null);
   const [channels, setChannels] = useState([]);
 
-  useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code');
-    if (!code) return;
-
-    // Exchange code for user & guild info from your backend
-    fetch(`http://localhost:3000/api/auth/discord`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        setUserGuilds(data.guilds);
-        // optionally set user info too
-      });
-  }, []);
-
   const handleGuildSelect = (guildId) => {
     setSelectedGuild(guildId);
-    fetch(`http://localhost:3000/api/discord/${guildId}/channels`)
+    fetch(`http://localhost:3000/discord/${guildId}/channels`)
       .then(res => res.json())
       .then(data => setChannels(data.channels));
   };
 
   const handleBotAdd = (channelId) => {
-    fetch(`http://localhost:3000/api/discord/${selectedGuild}/add-bot`, {
+    fetch(`http://localhost:3000/discord/${selectedGuild}/add-bot`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ channelId }),
